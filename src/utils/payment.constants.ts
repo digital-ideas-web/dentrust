@@ -1,4 +1,5 @@
-import express from 'express'
+import express from 'express';
+import { getAllAvailablePlans } from "./payment.helpers";
 
 
 export const PlanPriceMap: Record<string, number> = {
@@ -27,7 +28,7 @@ export const PlanConfigs: Record<string, PlanConfig> = {
         returnRate: 0.2,
         durationInMs: 48 * 60 * 60 * 1000, //48hours
         price: {
-            min: 100,
+            min: 600,
             max: 1500,
         },
     },
@@ -96,5 +97,17 @@ export const PlanConfigs: Record<string, PlanConfig> = {
 export const planConfigs = express.Router();
 
 planConfigs.get('/planConstants', (req, res) => {
-    res.json(PlanConfigs);
+    try {
+        res.json({
+            success: true,
+            plans: PlanConfigs,
+            availablePlans: getAllAvailablePlans()
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch plan configurations',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
 });

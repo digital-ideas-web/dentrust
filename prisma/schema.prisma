@@ -9,19 +9,20 @@ datasource db {
 }
 
 model User {
-  id                   Int           @id @default(autoincrement())
-  createdAt            DateTime      @default(now())
-  updateAt             DateTime      @updatedAt
+  id                   Int            @id @default(autoincrement())
+  createdAt            DateTime       @default(now())
+  updateAt             DateTime       @updatedAt
   fullName             String
-  userName             String        @unique
-  email                String        @unique
+  userName             String         @unique
+  email                String         @unique
   password             String
-  role                 Roles         @default(USER)
-  passwordUpdatedCount Int           @default(0)
-  Deposit              Deposit[]
-  Installment          Installment[]
-  UserPlan             UserPlan[]
-  Withdrawal           Withdrawal[]
+  role                 Roles          @default(USER)
+  passwordUpdatedCount Int            @default(0)
+  deposit              Deposit[]
+  transactions         Transactions[]
+  withdrawal           Withdrawal[]
+  contactInfo          ContactInfo?
+  fileMetadata         FileMetadata[]
 }
 
 model Deposit {
@@ -34,6 +35,8 @@ model Deposit {
   plan          String
   isUpdated     Boolean  @default(false)
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, plan])
 }
 
 model Withdrawal {
@@ -46,30 +49,42 @@ model Withdrawal {
   user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Installment {
-  id             Int      @id @default(autoincrement())
-  userId         Int
-  user           User     @relation(fields: [userId], references: [id])
-  plan           String
-  amountPaid     Float    @default(0)
-  targetAmount   Float
-  transactionId  String   @unique
-  status         String
-  paymentHistory Json? // Store array of payments like [{ amount, date }]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@unique([userId, plan, status])
+model Transactions {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  //plan           String
+  amount        Int
+  //targetAmount   Float
+  transactionId String   @unique
+  status        Boolean  @default(false)
+  //paymentHistory Json? // Store array of payments like [{ amount, date }]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
-model UserPlan {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  plan      String
-  startDate DateTime
-  endDate   DateTime
-  status    String
-  user      User     @relation(fields: [userId], references: [id])
+model ContactInfo {
+  id          Int    @id @default(autoincrement())
+  userId      Int    @unique
+  phoneNumber String
+  id_number   String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, phoneNumber, id_number])
+}
+
+model FileMetadata {
+  id           Int // unique ID
+  originalName String // original filename
+  storedName   String // unique name used in /uploads
+  path         String // relative or absolute path
+  mimeType     String // e.g., "image/png"
+  size         Int // in bytes
+  uploaderId   Int // user reference
+  uploadedAt   DateTime @default(now())
+  user         User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  @@unique([uploaderId, storedName])
 }
 
 enum Roles {

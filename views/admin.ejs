@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Dentrust Capital Investments</title>
     <style>
         * {
             margin: 0;
@@ -811,7 +811,7 @@
                     <i>⚠️</i> Withdrawal Alerts
                 </a>
                 <a href="#" class="nav-item" data-section="deposits">
-                    <i>💰</i> Deposits
+                    <i>💰</i> Purchased Plans
                 </a>
                 <a href="#" class="nav-item" data-section="withdrawal-form">
                     <i>📝</i> Withdrawal Form
@@ -820,7 +820,7 @@
                     <i>👥</i> Users Management
                 </a>
                 <a href="#" class="nav-item" data-section="installments">
-                    <i>📅</i> Installments
+                    <i>📅</i> Deposit Confirm
                 </a>
             </div>
         </nav>
@@ -926,6 +926,10 @@
                                 <input type="text" id="update-username" class="form-control" required>
                             </div>
                             <div class="form-group">
+                                <label for="update-planName">PlanName</label>
+                                <input type="text" id="update-planName" class= "form-control"  required>
+                            </div>
+                            <div class="form-group">
                                 <label for="update-transaction-id">Transaction ID</label>
                                 <input type="text" id="update-transaction-id" class="form-control" required>
                             </div>
@@ -934,7 +938,8 @@
                             <label for="update-amount">Amount</label>
                             <input type="number" id="update-amount" class="form-control" step="0.01" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update User</button>
+
+                        <button type="submit" class="btn btn-primary">Update Plan</button>
                     </form>
                 </div>
             </div>
@@ -1228,7 +1233,7 @@
                 const transactionsData = transactionsResult.data || []; // Extract the data array
                 
                 // Load pending deposits from API
-                const pendingDepositsResponse = await fetch('/api/admin/getDeposit');
+                const pendingDepositsResponse = await fetch('/api/admin/deposits/pending');
                 const pendingDepositsResult = await pendingDepositsResponse.json();
                 const pendingDepositsData = pendingDepositsResult.data || []; // Extract the data array
                 
@@ -1277,25 +1282,25 @@
                     verifiedWithdrawalsResponse,
                     unverifiedWithdrawalsResponse,
                     verifiedDepositsResponse,
-                    unverifiedDepositsResponse
+                    // unverifiedDepositsResponse
                 ] = await Promise.all([
                     fetch('/api/withdrawal/listVerifiedWithdrawal'),
                     fetch('/api/withdrawal/listWithdrawal'),
                     fetch('/api/admin/deposits'),
-                    fetch('/api/admin/getDeposit')
+                    // fetch('/api/admin/getDeposit')
                 ]);
 
                 // Parse JSON responses
                 const verifiedWithdrawals = await verifiedWithdrawalsResponse.json();
                 const unverifiedWithdrawals = await unverifiedWithdrawalsResponse.json();
                 const verifiedDeposits = await verifiedDepositsResponse.json();
-                const unverifiedDeposits = await unverifiedDepositsResponse.json();
+                // const unverifiedDeposits = await unverifiedDepositsResponse.json();
 
                 // Extract data arrays - FIXED: Use correct property names
                 const verifiedWithdrawalsData = verifiedWithdrawals.withdraw || verifiedWithdrawals.data || [];
                 const unverifiedWithdrawalsData = unverifiedWithdrawals.withdraw || unverifiedWithdrawals.data || [];
                 const verifiedDepositsData = verifiedDeposits.data || verifiedDeposits.deposits || [];
-                const unverifiedDepositsData = unverifiedDeposits.data || unverifiedDeposits.deposits || [];
+                // const unverifiedDepositsData = unverifiedDeposits.data || unverifiedDeposits.deposits || [];
 
                 // Combine all transactions into a single array
                 const allTransactions = [
@@ -1319,7 +1324,7 @@
                     })),
                     // Verified deposits
                     ...verifiedDepositsData.map(txn => ({
-                        id: txn.id || txn.transactionId,
+                        id: txn.transactionId,
                         user: txn.user?.userName || txn.userName || 'N/A',
                         type: 'Deposit',
                         amount: txn.amount,
@@ -1327,14 +1332,14 @@
                         date: txn.createdAt || txn.date || new Date().toISOString()
                     })),
                     // Unverified deposits
-                    ...unverifiedDepositsData.map(txn => ({
-                        id: txn.id || txn.transactionId,
-                        user: txn.user?.userName || txn.userName || 'N/A',
-                        type: 'Deposit',
-                        amount: txn.amount,
-                        status: 'Pending',
-                        date: txn.createdAt || txn.date || new Date().toISOString()
-                    }))
+                    // ...unverifiedDepositsData.map(txn => ({
+                    //     id: txn.id || txn.transactionId,
+                    //     user: txn.user?.userName || txn.userName || 'N/A',
+                    //     type: 'Deposit',
+                    //     amount: txn.amount,
+                    //     status: 'Pending',
+                    //     date: txn.createdAt || txn.date || new Date().toISOString()
+                    // }))
                 ];
 
                 // Sort transactions by date (newest first)
@@ -1420,6 +1425,7 @@
                 const depositsResponse = await fetch('/api/admin/getDeposit');
                 const depositsResult = await depositsResponse.json();
                 const depositsData = depositsResult.data || []; // Extract the data array
+                console.log(depositsData)
 
                 const allDeposits = 
                     // Verified withdrawals
@@ -1453,7 +1459,7 @@
             }
         }
         
-        // Load installments
+       // Load payment
         function createPaymentAdmin() {
             // Private variables (equivalent to class properties)
             const searchInput = document.getElementById('planSearch');
@@ -1462,16 +1468,29 @@
             const filterSection = document.getElementById('filterSection');
             const filterOptions = document.getElementById('filterOptions');
             const filterStats = document.getElementById('filterStats');
+            const paginationContainer = document.getElementById('paginationContainer') || createPaginationContainer();
             
             let allTransactions = [];
             let currentFilter = 'all';
-            let currentPlanName = '';
+            let currentSearchTerm = '';
+            let currentPage = 1;
+            let totalPages = 1;
+            let totalCount = 0;
+
+            // Create pagination container if it doesn't exist
+            function createPaginationContainer() {
+                const container = document.createElement('div');
+                container.id = 'paginationContainer';
+                container.className = 'pagination-container';
+                resultsSection.parentNode.insertBefore(container, resultsSection.nextSibling);
+                return container;
+            }
 
             // Private functions (equivalent to class methods)
             function bindEvents() {
-                searchBtn.addEventListener('click', () => searchPayments());
+                searchBtn.addEventListener('click', () => loadPendingDeposits());
                 searchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') searchPayments();
+                    if (e.key === 'Enter') loadPendingDeposits();
                 });
 
                 // Filter event listeners
@@ -1495,26 +1514,32 @@
             }
 
             function applyFilter(filterType) {
+                currentSearchTerm = searchInput.value.trim();
                 let filteredTransactions = [...allTransactions];
                 
-                if (filterType !== 'all') {
+                // Apply search filter first
+                if (currentSearchTerm) {
                     filteredTransactions = allTransactions.filter(transaction => {
+                        return transaction.user.userName.toLowerCase().includes(currentSearchTerm.toLowerCase()) ||
+                            transaction.transactionId.toLowerCase().includes(currentSearchTerm.toLowerCase());
+                    });
+                }
+                
+                // Apply status filter
+                if (filterType !== 'all') {
+                    filteredTransactions = filteredTransactions.filter(transaction => {
                         switch (filterType) {
                             case 'pending':
-                                return transaction.verified === 'pending';
+                                return transaction.status === false; // Assuming false means pending
                             case 'confirmed':
-                                return transaction.verified === 'confirmed';
-                            case 'completed':
-                                return transaction.status === 'completed';
-                            case 'rejected':
-                                return transaction.verified === 'rejected';
+                                return transaction.status === true;  // Assuming true means confirmed
                             default:
                                 return true;
                         }
                     });
                 }
 
-                displayTransactions(filteredTransactions, currentPlanName, allTransactions.length, filterType);
+                displayTransactions(filteredTransactions, filterType);
                 updateFilterStats(filterType, filteredTransactions.length, allTransactions.length);
             }
 
@@ -1526,44 +1551,39 @@
                 } else {
                     const filterNames = {
                         'pending': 'pending',
-                        'confirmed': 'confirmed',
-                        'completed': 'completed',
-                        'rejected': 'rejected'
+                        'confirmed': 'confirmed'
                     };
                     statsText = `Showing ${filteredCount} ${filterNames[filterType]} transaction${filteredCount !== 1 ? 's' : ''} out of ${totalCount} total`;
+                }
+                
+                if (currentSearchTerm) {
+                    statsText += ` (filtered by "${currentSearchTerm}")`;
                 }
                 
                 filterStats.textContent = statsText;
             }
 
-            async function searchPayments() {
-                const planName = searchInput.value.trim();
-                if (!planName) {
-                    showToast('Please enter a plan name', 'error');
-                    return;
-                }
-
+            async function loadPendingDeposits(page = 1) {
                 showLoading();
-                currentPlanName = planName;
+                currentPage = page;
 
                 try {
-                    // Updated API endpoint to match your actual route
-                    const response = await fetch(`/api/installments/views/${encodeURIComponent(planName)}`);
+                    const response = await fetch(`/api/admin/deposits/pending?page=${page}&limit=20`);
                     
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
                     }
 
                     const data = await response.json();
                     
-                    // Handle your actual API response structure
-                    let transactions = [];
-                    if (data.views && Array.isArray(data.views)) {
-                        transactions = data.views;
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to fetch pending deposits');
                     }
                     
-                    allTransactions = transactions;
+                    allTransactions = data.transactions || [];
+                    totalCount = data.totalCount || 0;
+                    totalPages = data.pagination?.totalPages || 1;
                     
                     // Show filter section
                     filterSection.classList.add('show');
@@ -1572,10 +1592,14 @@
                     resetFilter();
                     applyFilter(currentFilter);
                     
+                    // Update pagination
+                    updatePagination(data.pagination);
+                    
                 } catch (error) {
-                    console.error('Search error:', error);
-                    showError(`Failed to search transactions: ${error.message}`);
+                    console.error('Load error:', error);
+                    showError(`Failed to load pending deposits: ${error.message}`);
                     filterSection.classList.remove('show');
+                    paginationContainer.style.display = 'none';
                 }
             }
 
@@ -1588,43 +1612,81 @@
                 currentFilter = 'all';
             }
 
+            function updatePagination(pagination) {
+                if (!pagination || totalPages <= 1) {
+                    paginationContainer.style.display = 'none';
+                    return;
+                }
+
+                paginationContainer.style.display = 'block';
+                paginationContainer.innerHTML = `
+                    <div class="pagination">
+                        <button class="pagination-btn" ${!pagination.hasPrevious ? 'disabled' : ''} 
+                                onclick="paymentAdmin.goToPage(${currentPage - 1})">
+                            Previous
+                        </button>
+                        
+                        <div class="pagination-info">
+                            Page ${pagination.currentPage} of ${pagination.totalPages}
+                        </div>
+                        
+                        <button class="pagination-btn" ${!pagination.hasNext ? 'disabled' : ''} 
+                                onclick="paymentAdmin.goToPage(${currentPage + 1})">
+                            Next
+                        </button>
+                    </div>
+                `;
+            }
+
+            function goToPage(page) {
+                if (page < 1 || page > totalPages) return;
+                loadPendingDeposits(page);
+            }
+
             function showLoading() {
                 resultsSection.innerHTML = `
                     <div class="loading">
                         <div class="spinner"></div>
-                        <h3>Searching transactions...</h3>
+                        <h3>Loading pending deposits...</h3>
                         <p>Please wait while we fetch the transaction data</p>
                     </div>
                 `;
                 filterSection.classList.remove('show');
+                paginationContainer.style.display = 'none';
             }
 
             function showError(message) {
                 resultsSection.innerHTML = `
                     <div class="no-results">
                         <div style="font-size: 4em; margin-bottom: 20px; color: #dc3545;">⚠️</div>
-                        <h3>Search Failed</h3>
+                        <h3>Load Failed</h3>
                         <p>${message}</p>
+                        <button class="btn btn-retry" onclick="paymentAdmin.loadPendingDeposits()">
+                            Try Again
+                        </button>
                     </div>
                 `;
                 filterSection.classList.remove('show');
+                paginationContainer.style.display = 'none';
             }
 
-            function displayTransactions(transactions, planName, totalCount, filterType = 'all') {
+            function displayTransactions(transactions, filterType = 'all') {
                 if (!transactions || transactions.length === 0) {
                     const filterText = filterType === 'all' ? '' : ` matching your filter criteria`;
+                    const searchText = currentSearchTerm ? ` for "${currentSearchTerm}"` : '';
+                    
                     resultsSection.innerHTML = `
                         <div class="results-header">
                             <div class="results-info">
-                                <h2>Transactions for "${planName}"</h2>
-                                <div class="results-summary">No transactions found${filterText}</div>
+                                <h2>Pending Deposits</h2>
+                                <div class="results-summary">No transactions found${searchText}${filterText}</div>
                             </div>
-                            ${filterType !== 'all' ? '<button class="clear-filters" onclick="paymentAdmin.clearFilters()">Clear Filters</button>' : ''}
+                            ${filterType !== 'all' || currentSearchTerm ? '<button class="clear-filters" onclick="paymentAdmin.clearFilters()">Clear Filters</button>' : ''}
                         </div>
                         <div class="no-results">
                             <div style="font-size: 4em; margin-bottom: 20px;">📭</div>
                             <h3>No transactions found</h3>
-                            <p>No transactions were found for plan "${planName}"${filterText}</p>
+                            <p>No transactions were found${searchText}${filterText}</p>
                         </div>
                     `;
                     return;
@@ -1636,55 +1698,53 @@
                     .map(userGroup => createUserTransactionGroup(userGroup))
                     .join('');
 
+                const searchText = currentSearchTerm ? ` (filtered by "${currentSearchTerm}")` : '';
+
                 resultsSection.innerHTML = `
                     <div class="results-header">
                         <div class="results-info">
-                            <h2>Transactions for "${planName}"</h2>
+                            <h2>Pending Deposits</h2>
                             <div class="results-summary">
                                 ${filterType === 'all' ? 
-                                    `Found ${totalCount} transaction${totalCount !== 1 ? 's' : ''} from ${Object.keys(groupedTransactions).length} user${Object.keys(groupedTransactions).length !== 1 ? 's' : ''}` :
-                                    `Showing ${transactions.length} filtered transaction${transactions.length !== 1 ? 's' : ''} from ${Object.keys(groupedTransactions).length} user${Object.keys(groupedTransactions).length !== 1 ? 's' : ''}`
+                                    `Found ${transactions.length} transaction${transactions.length !== 1 ? 's' : ''} from ${Object.keys(groupedTransactions).length} user${Object.keys(groupedTransactions).length !== 1 ? 's' : ''}${searchText}` :
+                                    `Showing ${transactions.length} filtered transaction${transactions.length !== 1 ? 's' : ''} from ${Object.keys(groupedTransactions).length} user${Object.keys(groupedTransactions).length !== 1 ? 's' : ''}${searchText}`
                                 }
                             </div>
                         </div>
-                        ${filterType !== 'all' ? '<button class="clear-filters" onclick="paymentAdmin.clearFilters()">Clear Filters</button>' : ''}
+                        ${filterType !== 'all' || currentSearchTerm ? '<button class="clear-filters" onclick="paymentAdmin.clearFilters()">Clear Filters</button>' : ''}
                     </div>
                     ${transactionsHtml}
                 `;
             }
 
             function clearFilters() {
+                searchInput.value = '';
+                currentSearchTerm = '';
                 resetFilter();
                 applyFilter('all');
             }
 
             function groupTransactionsByUser(transactions) {
                 return transactions.reduce((grouped, transaction) => {
-                    const username = transaction.username;
+                    const username = transaction.user.userName;
+                    const userId = transaction.user.id;
+                    
                     if (!grouped[username]) {
                         grouped[username] = {
                             username,
-                            transactions: [],
-                            totalPaid: 0,
-                            targetAmount: transaction.targetAmount,
-                            status: transaction.status
+                            userId,
+                            transactions: []
                         };
                     }
                     grouped[username].transactions.push(transaction);
-                    grouped[username].totalPaid += transaction.amountPaid;
-                    
-                    // Update status to completed if any transaction is completed
-                    if (transaction.status === 'completed') {
-                        grouped[username].status = 'completed';
-                    }
                     
                     return grouped;
                 }, {});
             }
 
             function createUserTransactionGroup(userGroup) {
-                const { username, transactions, totalPaid, targetAmount, status } = userGroup;
-                const progress = targetAmount > 0 ? (totalPaid / targetAmount) * 100 : 0;
+                const { username, userId, transactions } = userGroup;
+                const totalAmount = transactions.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
                 
                 const transactionCards = transactions
                     .map(transaction => createTransactionCard(transaction))
@@ -1693,13 +1753,10 @@
                 return `
                     <div class="user-group">
                         <div class="user-header">
-                            <h3>${username}</h3>
+                            <h3>${username} (ID: ${userId})</h3>
                             <div class="user-summary">
-                                <span class="status-badge status-${status}">${status}</span>
-                                <span class="progress-text">$${formatAmount(totalPaid)} / $${formatAmount(targetAmount)}</span>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
-                                </div>
+                                <span class="transaction-count">${transactions.length} transaction${transactions.length !== 1 ? 's' : ''}</span>
+                                <span class="total-amount">Total: $${formatAmount(totalAmount)}</span>
                             </div>
                         </div>
                         <div class="transactions-list">
@@ -1710,10 +1767,8 @@
             }
 
             function createTransactionCard(transaction) {
-                const statusClass = transaction.verified === 'confirmed' ? 'verified' : 
-                                transaction.verified === 'rejected' ? 'rejected' : 'pending';
-                const statusText = transaction.verified === 'confirmed' ? 'Confirmed' : 
-                                transaction.verified === 'rejected' ? 'Rejected' : 'Pending';
+                const statusClass = transaction.status ? 'confirmed' : 'pending';
+                const statusText = transaction.status ? 'Confirmed' : 'Pending';
                 
                 return `
                     <div class="transaction-card">
@@ -1725,23 +1780,35 @@
                         <div class="transaction-details">
                             <div class="detail-item">
                                 <div class="detail-label">Amount</div>
-                                <div class="detail-value amount-paid">$${formatAmount(transaction.amountPaid)}</div>
+                                <div class="detail-value amount-paid">$${formatAmount(transaction.amount)}</div>
                             </div>
                             
                             <div class="detail-item">
                                 <div class="detail-label">Date</div>
-                                <div class="detail-value">${formatDate(transaction.date)}</div>
+                                <div class="detail-value">${formatDate(transaction.createdAt)}</div>
                             </div>
                             
                             <div class="detail-item">
-                                <div class="detail-label">Status</div>
-                                <div class="detail-value">
-                                    <span class="status-badge status-${transaction.status}">${transaction.status}</span>
-                                </div>
+                                <div class="detail-label">User</div>
+                                <div class="detail-value">${transaction.user.userName}</div>
                             </div>
+
+                            ${transaction.reference ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Reference</div>
+                                    <div class="detail-value">${transaction.reference}</div>
+                                </div>
+                            ` : ''}
+
+                            ${transaction.description ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Description</div>
+                                    <div class="detail-value">${transaction.description}</div>
+                                </div>
+                            ` : ''}
                         </div>
                         
-                        ${transaction.verified === 'pending' ? `
+                        ${!transaction.status ? `
                             <div class="action-buttons">
                                 <button class="btn btn-verify" onclick="paymentAdmin.verifyTransaction('${transaction.transactionId}', this)">
                                     ✅ Confirm Payment
@@ -1763,12 +1830,15 @@
                 buttons.forEach(btn => btn.disabled = true);
 
                 try {
-                    // Updated API endpoint for verification
-                    const response = await fetch(`/api/installments/${transactionId}/verify`, {
-                        method: 'PUT',
+                    const response = await fetch('/api/admin/deposits/verify', {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        body: JSON.stringify({
+                            transactionId: transactionId,
+                            shouldConfirm: true
+                        })
                     });
 
                     if (!response.ok) {
@@ -1776,14 +1846,23 @@
                         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
                     }
 
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.message || 'Failed to confirm transaction');
+                    }
+
                     showToast('Transaction confirmed successfully!', 'success');
                     updateTransactionStatus(card, 'confirmed');
                     
                     // Update the transaction in our local data
-                    const transaction = allTransactions.find(t => t.transactionId === transactionId);
+                    const transaction = allTransactions.find(t => t.id == transactionId);
                     if (transaction) {
-                        transaction.verified = 'confirmed';
+                        transaction.status = true;
                     }
+                    
+                    // Re-apply current filter to update display
+                    applyFilter(currentFilter);
                     
                 } catch (error) {
                     console.error('Verify error:', error);
@@ -1800,7 +1879,6 @@
                 buttons.forEach(btn => btn.disabled = true);
 
                 try {
-                    // Updated API endpoint for rejection
                     const response = await fetch(`/api/transactions/${transactionId}/reject`, {
                         method: 'POST',
                         headers: {
@@ -1816,11 +1894,14 @@
                     showToast('Transaction rejected successfully!', 'success');
                     updateTransactionStatus(card, 'rejected');
                     
-                    // Update the transaction in our local data
-                    const transaction = allTransactions.find(t => t.transactionId === transactionId);
-                    if (transaction) {
-                        transaction.verified = 'rejected';
+                    // Remove the transaction from local data since it's rejected
+                    const transactionIndex = allTransactions.findIndex(t => t.id == transactionId);
+                    if (transactionIndex !== -1) {
+                        allTransactions.splice(transactionIndex, 1);
                     }
+                    
+                    // Re-apply current filter to update display
+                    applyFilter(currentFilter);
                     
                 } catch (error) {
                     console.error('Reject error:', error);
@@ -1832,12 +1913,21 @@
             function updateTransactionStatus(card, newStatus) {
                 const statusElement = card.querySelector('.transaction-status');
                 statusElement.textContent = newStatus === 'confirmed' ? 'Confirmed' : 'Rejected';
-                statusElement.className = `transaction-status status-${newStatus === 'confirmed' ? 'verified' : 'rejected'}`;
+                statusElement.className = `transaction-status status-${newStatus === 'confirmed' ? 'confirmed' : 'rejected'}`;
                 
                 const actionButtons = card.querySelector('.action-buttons');
                 if (actionButtons) {
                     actionButtons.remove();
                 }
+            }
+
+            function goToPage(page) {
+                if (page < 1 || page > totalPages) return;
+                loadPendingDeposits(page);
+            }
+
+            function refreshCurrentPage() {
+                loadPendingDeposits(currentPage);
             }
 
             function formatAmount(amount) {
@@ -1883,14 +1973,19 @@
             // Initialize events
             bindEvents();
 
+            // Auto-load pending deposits when the page loads
+            loadPendingDeposits();
+
             // Return public methods (equivalent to class methods that need to be accessed externally)
             return {
                 clearFilters,
                 verifyTransaction,
-                rejectTransaction
+                rejectTransaction,
+                loadPendingDeposits,
+                goToPage,
+                refreshCurrentPage
             };
         }
-
         // Initialize the payment admin system
         const paymentAdmin = createPaymentAdmin();
 
@@ -1901,14 +1996,15 @@
                 e.preventDefault();
                 
                 const formData = {
-                    username: document.getElementById('update-username').value,
+                    userName: document.getElementById('update-username').value,
                     transactionId: document.getElementById('update-transaction-id').value,
-                    amount: parseFloat(document.getElementById('update-amount').value)
+                    planName: document.getElementById('update-planName').value,
+                    newAmount: parseFloat(document.getElementById('update-amount').value)
                 };
                 
                 try {
                     // Call /api/deposit/update-deposit
-                    const response = await fetch('/api/deposit/update-deposit', {
+                    const response = await fetch('/api/deposit/admin/plans/update-amount', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1933,7 +2029,7 @@
                 e.preventDefault();
                 
                 const formData = {
-                    username: document.getElementById('withdrawal-username').value,
+                    userName: document.getElementById('withdrawal-username').value,
                     amount: parseFloat(document.getElementById('withdrawal-amount').value),
                     batchId: document.getElementById('withdrawal-batch-id').value
                 };
@@ -2041,7 +2137,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ withdrawalId })
+                    body: JSON.stringify({ id:Number( withdrawalId )})
                 });
                 
                 if (response.ok) {

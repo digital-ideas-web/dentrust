@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+// import { Prisma } from "@prisma/client";
 import Authentication from "../utils/auth";
 import { prisma } from "../utils/db.sever";
 import { generateHash, compareHash } from "../utils/password";

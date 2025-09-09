@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Installment Payments</title>
+    <title>DenTrust Capital Investments</title>
     <style>
         * {
             margin: 0;
@@ -364,7 +364,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1> My Installment Payments</h1>
+            <h1> Transaction History</h1>
             <p>Track your payment progress and view detailed history</p>
         </div>
         
@@ -392,52 +392,9 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
-        let currentUserId = null;
-        
-        // API base URL - using relative URL since we're on the same server
-        const API_BASE_URL = '/api';
-        
-        // Get authentication token from localStorage or sessionStorage
-        // function getAuthToken() {
-        //     return localStorage.getItem('authToken') || 
-        //            localStorage.getItem('token') || 
-        //            sessionStorage.getItem('authToken') || 
-        //            sessionStorage.getItem('token');
-        // }
-        
-        // Make authenticated API request
-        async function makeAuthenticatedRequest(url, options = {}) {
-            // const token = getAuthToken();
-            
-            // if (!token) {
-            //     throw new Error('No authentication token found. Please login again.');
-            // }
-            
-            const defaultOptions = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${token}`
-                }
-            };
-            
-            const mergedOptions = {
-                ...defaultOptions,
-                ...options,
-                headers: {
-                    ...defaultOptions.headers,
-                    ...options.headers
-                }
-            };
-            
-            return fetch(url, mergedOptions);
-        }
-        
+    <script>        
         // Initialize page when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Since userId comes from the JWT token in your backend,
-            // we don't need to get it client-side. The server will extract it.
             loadUserPayments();
         });
         
@@ -447,189 +404,119 @@
             hideError();
             
             try {
-                // Note: We're using a dummy userId in the URL since your backend 
-                // extracts the real userId from req.user (JWT token)
-                const response = await makeAuthenticatedRequest(`${API_BASE_URL}/installment/status/me`);
-                
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        throw new Error('Authentication failed. Please login again.');
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const payments = await response.json();
-                displayPayments(payments);
+                // Fetch all transaction data from your APIs
+                const [
+                    verifiedDepositsResponse,
+                ] = await Promise.all([
+                    fetch('/api/transaction/history'),
+                ]);
+
+                // Parse JSON responses
+                const verifiedDeposits = await verifiedDepositsResponse.json();
+
+                // Extract data arrays - FIXED: Use correct property names
+                const verifiedDepositsData = verifiedDeposits.data || verifiedDeposits.balance || [];
+                // const unverifiedDepositsData = unverifiedDeposits.data || unverifiedDeposits.deposits || [];
+
+                // Combine all transactions into a single array
+                const allTransactions = [
+                    // Verified deposits
+                    ...verifiedDepositsData.map(txn => ({
+                        id: txn.transactionId,
+                        // user: txn.user?.userName || txn.userName || 'N/A',
+                        // type: 'Deposit',
+                        amount: txn.amount,
+                        status: txn.status === true ? "Verified"
+                              : txn.status === false ? "Pending"
+                              : (txn.status || "Unknown"),
+                        date: txn.createdAt || txn.date || new Date().toISOString()
+                    })),
+                ];
+
+                // Sort transactions by date (newest first)
+                allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // Debug logging
+                console.log('Total transactions loaded:', allTransactions.length);
+                console.log('Sample transaction:', allTransactions);
+
+                // THIS WAS MISSING - Call displayPayments to show data on frontend
+                displayPayments(allTransactions); 
                 
             } catch (error) {
-                console.error('Error loading payments:', error);
-                if (error.message.includes('authentication') || error.message.includes('login')) {
-                    showError('Authentication error. Please login again.');
-                    // Optionally redirect to login page
-                    // window.location.href = '/login';
-                } else {
-                    showError('Failed to load payment data. Please check your connection and try again.');
-                }
-            } finally {
+                console.error('Error loading transactions:', error);
+                // Show error in the table
+                const tbody = document.querySelector('#transactions-table tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #ff4444;">
+                            Error loading transactions. Please try again.
+                        </td>
+                    </tr>
+                `;
+            }finally {
                 showLoading(false);
             }
         }
         
         // Display payments in the grid
-        function displayPayments(payments) {
+        function displayPayments(allTransactions) {
             const container = document.getElementById('paymentsContainer');
+            if (!container) return;
             
-            if (!payments || payments.length === 0) {
+            if (!allTransactions || allTransactions.length === 0) {
                 container.innerHTML = '<div class="no-payments">No payment records found for this user.</div>';
                 return;
             }
             
-            const paymentsHTML = payments.map(payment => `
+            const paymentsHTML = allTransactions.map(txn => `
                 <div class="payment-card">
-                    <div class="plan-name">${escapeHtml(payment.plan)}</div>
+                    <div class="plan-name">${escapeHtml(txn.createdAt)}</div>
                     
                     <div class="payment-info">
                         <div class="info-item">
                             <span class="info-label">Amount Paid</span>
-                            <span class="info-value">$${formatCurrency(payment.amountPaid)}</span>
+                            <span class="info-value">$${formatCurrency(txn.amount)}</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Target Amount</span>
-                            <span class="info-value">$${formatCurrency(payment.targetAmount)}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Remaining</span>
-                            <span class="info-value">$${formatCurrency(payment.remaining)}</span>
+                            <span class="info-label">Transaction Id</span>
+                            <span class="info-value">${txn.id}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Status</span>
-                            <span class="status-badge status-${payment.status.replace('-', '-')}">${payment.status}</span>
+                            <span class="status-badge status-${getStatusClass(txn.status)}">${formatStatusDisplay(txn.status)}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Date</span>
+                            <span class="info-value">${formatDate(txn.date)}</span>
                         </div>
                     </div>
-                    
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${payment.progress}"></div>
-                    </div>
-                    <div style="text-align: center; margin-top: 10px; font-weight: 600; color: #667eea;">
-                        Progress: ${payment.progress}
-                    </div>
-                    
-                    <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-                        Last Updated: ${formatDate(payment.lastUpdated)}
-                    </div>
-                    
-                    <button class="view-more-btn" onclick="viewPaymentDetails('${escapeHtml(payment.plan)}')">
-                        View More Details
-                    </button>
                 </div>
             `).join('');
             
             container.innerHTML = `<div class="payment-grid">${paymentsHTML}</div>`;
         }
-        
-        // View detailed payment information
-        async function viewPaymentDetails(planName) {
-            try {
-                // Note: Using dummy userId since backend extracts real userId from JWT
-                const response = await makeAuthenticatedRequest(
-                    `${API_BASE_URL}/installment/history/me/${encodeURIComponent(planName)}`
-                );
-                
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        throw new Error('Authentication failed. Please login again.');
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const details = await response.json();
-                showPaymentModal(details);
-                
-            } catch (error) {
-                console.error('Error loading payment details:', error);
-                if (error.message.includes('authentication') || error.message.includes('login')) {
-                    showError('Authentication error. Please login again.');
-                } else {
-                    showError('Failed to load detailed payment information');
-                }
+
+        //Helper function to get status class
+        function getStatusClass(status) {
+            if (typeof status === 'boolean') {
+                return status ? 'completed' : 'pending';
             }
-        }
-        
-        // Show payment details in modal
-        function showPaymentModal(details) {
-            const modal = document.getElementById('paymentModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            
-            modalTitle.textContent = `${details.plan} - Payment Details`;
-            
-            // Parse payment history
-            let paymentHistory = [];
-            try {
-                paymentHistory = typeof details.paymentHistory === 'string' 
-                    ? JSON.parse(details.paymentHistory) 
-                    : details.paymentHistory || [];
-            } catch (e) {
-                console.error('Error parsing payment history:', e);
-                paymentHistory = [];
+
+            if (!status) return 'pending';
+            const statusStr = String(status).toLowerCase();
+            if (statusStr.includes('completed') || 
+                statusStr.includes('verified') || 
+                statusStr.includes('success')) {
+                return 'completed';    
+            }else if (statusStr.includes('pending') || statusStr.includes('processing')){
+                return 'pending';
+            }else if (statusStr.includes('progress')) {
+                return 'in-progress';
             }
-            
-            const modalContent = `
-                <div class="detail-section">
-                    <div class="detail-title">📊 Plan Overview</div>
-                    <div class="detail-grid">
-                        <div class="info-item">
-                            <span class="info-label">Plan Name</span>
-                            <span class="info-value">${escapeHtml(details.plan)}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Current Status</span>
-                            <span class="status-badge status-${details.status.replace('-', '-')}">${details.status}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Total Paid</span>
-                            <span class="info-value">$${formatCurrency(details.amountPaid)}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Target Amount</span>
-                            <span class="info-value">$${formatCurrency(details.targetAmount)}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Transaction ID</span>
-                            <span class="info-value">${escapeHtml(details.transactionId || 'N/A')}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Remaining</span>
-                            <span class="info-value">$${formatCurrency(details.targetAmount - details.amountPaid)}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📋 Payment History</div>
-                    <div class="payment-history">
-                        ${paymentHistory.length > 0 
-                            ? paymentHistory.map(payment => `
-                                <div class="history-item">
-                                    <div>
-                                        <div class="history-date">${formatDate(payment.date || payment.timestamp)}</div>
-                                        <div style="font-size: 0.9rem; color: #666;">
-                                            ${payment.method || 'Payment'} ${payment.reference ? `(Ref: ${payment.reference})` : ''}
-                                        </div>
-                                    </div>
-                                    <div class="history-amount">$${formatCurrency(payment.amount)}</div>
-                                </div>
-                            `).join('')
-                            : '<div style="text-align: center; color: #666; padding: 20px;">No payment history available</div>'
-                        }
-                    </div>
-                </div>
-            `;
-            
-            modalBody.innerHTML = modalContent;
-            modal.style.display = 'block';
-        }
-        
+            return 'pending';
+        };
+
         // Close modal
         function closeModal() {
             const modal = document.getElementById('paymentModal');
@@ -644,6 +531,14 @@
             }
         }
         
+        // Helper function to format boolean status
+        function formatStatusDisplay(status) {
+            if (typeof status === 'boolean'){
+                return status ? 'Completed' : 'Pending';
+            }
+            return status || 'Unknown'
+        }
+
         // Helper functions
         function showLoading(show) {
             const loadingDiv = document.getElementById('loadingDiv');

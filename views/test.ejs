@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dentrust Capital Investments</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:linear-gradient(135deg, #fff 0%, #ffff 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1001;
+
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+           background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 3px;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .sidebar-logo {
+            /*color: white;*/
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .imgLogo {
+            width: 15rem;
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+            filter: brightness(0) invert(1);
+            /* border: 2px solid #fff; */
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background:   linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            fill: currentColor;
+        }
+
+        /*.nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 30px;
+        }*/
+
+        .dropdown {
+            display: none;
+            padding-left: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-item.has-dropdown .nav-link::after {
+            content: '▼';
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-item.has-dropdown.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+       .dropdown {
+            max-height: 0;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-item.has-dropdown.active .dropdown {
+            max-height: 100px;
+        }
+
+        .dropdown {
+            padding: 12px 40px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .dropdown:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding-left: 50px;
+        }
+
+        /* Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            align-self: center;
+           /* padding: 20px;*/
+        }
+
+        h1 {
+            text-align: center;
+            color: #8f6b28;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /*.plans-container {
+            height: 70vh;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 15px;
+            align-content: center;
+            background: linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }*/
+
+        .plans-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .plans-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .plans-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .plans-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .plan-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .plan-card:hover::before {
+            left: 100%;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1px;
+        }
+
+        .plan-details {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            transform: translateY(-20px);
+        }
+
+        .plan-card:hover .plan-details {
+            opacity: 1;
+            max-height: 500px;
+            transform: translateY(0);
+        }
+
+        .benefits-section {
+            margin-bottom: 15px;
+        }
+
+        .benefits-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .benefits-list {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .return-rate {
+            color: #27ae60;
+            font-size: 1.1rem;
+        }
+
+        .referral-bonus {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .buy-button {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .buy-button:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+       
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 40px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .plans-container {
+                height: 60vh;
+            }
+            
+            .sidebar {
+                width: 280px;
+                left: -280px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .menu-toggle {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <!--<header class="header">
+        <div class="logo"><img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo"></div>
+
+    </header>-->
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>    
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-nav">
+            <div class="nav-item">
+                <a href="/dashboard" class="nav-link active" onclick="showSection('dashboard')">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    Dashboard
+                </a>
+            </div>
+            <div class="nav-item has-dropdown" onclick="toggleDropdown(this)">
+                <a href="#" class="nav-link" onclick="toggleDropdown('transactionDropdown')">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Transactions
+                </a>
+                <div class="dropdown" id="transactionDropdown">
+                    <a href="/plans" onclick="showSection('deposits')">Deposits</a>
+                    <a href="/withdraw" onclick="showSection('withdrawals')">Withdrawals</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="/profile" class="nav-link" onclick="showSection('profile')">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    Profile
+                </a>
+            </div>
+            <div class="nav-item has-dropdown" onclick="toggleDropdown(this)">
+                <a href="#" class="nav-link" onclick="toggleDropdown('fundDropdown')">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                    </svg>
+                    Fund Account
+                </a>
+                <div class="dropdown" id="fundDropdown">
+                    <a href="/installmentPay" onclick="showSection('makePayment')">Make Payment</a>
+                    <a href="/installmentTransaction" onclick="showSection('viewPayments')">View Payments</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="/" class="nav-link" onclick="logout()">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                    Logout
+                </a>
+            </div>
+            <div class="google" style="display: flex;overflow: hidden;width: 50px;height: 30px;">
+                <div id="google_translate_element"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1> Investment Plans</h1>
+        <div class="plans-container">
+            <div id="plans-grid" class="plans-grid">
+                <div class="loading">Loading plans...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle" style="text-align: center; margin-bottom: 20px; color: #333;">Payment Form</h2>
+            <form id="paymentForm">
+              <input type="hidden" id="selectedPlan" name="selectedPlan" value="">
+                <div class="form-group">
+                    <label class="form-label">Investment Amount ($)</label>
+                    <input type="number" id="amount" class="form-input" placeholder="Enter amount" required>
+                </div>
+                <!--<div class="form-group">
+                    <label class="form-label">Transaction ID</label>
+                    <input type="text" id="transactionId" class="form-input" placeholder="Enter transaction ID" required>
+                </div>-->
+               <!--<div class="form-group wallet-address-group">
+                    <label class="form-label">Wallet Address</label>
+                    <input type="text" id="walletAddress" class="form-input" value="bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl" readonly>
+                    <button type="button" class="copy-button" onclick="copyWalletAddress()">Copy</button>
+                </div>-->
+                <button type="submit" class="submit-button">Submit Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced plan data with detailed information
+        const detailedPlansData = {
+            PRIME: {
+                returnRate: 0.2,
+                durationInMs: 48 * 60 * 60 * 1000,
+                price: { min: 600, max: 1500 },
+                benefits: "Trading options",
+                accrual: "20% in 48 hours",
+                referralBonus: "15%"
+            },
+            STANDARD: {
+                returnRate: 0.25,
+                durationInMs: 48 * 60 * 60 * 1000,
+                price: { min: 1600, max: 5000 },
+                benefits: "Advanced trading, Market analysis",
+                accrual: "25% in 48 hours",
+                referralBonus: "15%"
+            },
+            GOLD: {
+                returnRate: 0.4,
+                durationInMs: 48 * 60 * 60 * 1000,
+                price: { min: 5100, max: 10000 },
+                benefits: "Premium trading, Unlimited daily trades",
+                accrual: "40% in 48 hours",
+                referralBonus: "15%"
+            },
+            PLATINUM: {
+                returnRate: 0.52,
+                durationInMs: 48 * 60 * 60 * 1000,
+                price: { min: 10100 },
+                benefits: "Elite trading, Personal advisor, Unlimited daily trades",
+                accrual: "52% in 48 hours",
+                referralBonus: "10%"
+            },
+            INSURANCE: {
+                returnRate: 0.25,
+                durationInMs: 7 * 24 * 60 * 60 * 1000,
+                price: { min: 30000 },
+                benefits: "Health Insurance, Life insurance, Car insurance, Home insurance",
+                accrual: "25% biweekly",
+                referralBonus: "25%"
+            },
+            RealEstate: {
+                returnRate: 0.75,
+                durationInMs: 14 * 24 * 60 * 60 * 1000,
+                price: { min: 30000 },
+                benefits: "Startup account, Personal account manager, ",
+                accrual: "75% in biweekly (85% if reinvested for 3 months without withdrawal",
+                referralBonus: "25%"
+            },
+            MERGER: {
+                returnRate: 0.9,
+                durationInMs: 14 * 24 * 60 * 60 * 1000,
+                price: { min: 50000 },
+                benefits: "Trading options",
+                accrual: "90% in biweekly (100% if reinvested for 3 months without withdrawal)",
+                referralBonus: "25%"
+            },
+            IMMIGRATION: {
+                returnRate: 0.75,
+                durationInMs: 14 * 24 * 60 * 60 * 1000,
+                price: { min: 25000 },
+                benefits: "Visa processing, Legal assistance, permanent citizenship/work permit, Accommodation",
+                accrual: "75% in biweekly",
+                referralBonus: "25%"
+            },
+            ETF: {
+                returnRate: 0.55,
+                durationInMs: 14 * 24 * 60 * 60 * 1000,
+                price: { min: 10000 },
+                benefits: "Startup account, Exchange-traded funds, Diversified portfolio",
+                accrual: "55% biweekly",
+                referralBonus: "15%"
+            }
+        };
+
+        function formatDuration(durationInMs) {
+            const days = Math.floor(durationInMs / (24 * 60 * 60 * 1000));
+            const hours = Math.floor(durationInMs / (60 * 60 * 1000));
+            
+            if (days > 0) {
+                return `${days} day${days > 1 ? 's' : ''}`;
+            } else {
+                return `${hours} hour${hours > 1 ? 's' : ''}`;
+            }
+        }
+
+        function formatPrice(price) {
+            if (price.max) {
+                return `$${price.min.toLocaleString()} - $${price.max.toLocaleString()}`;
+            } else {
+                return `$${price.min.toLocaleString()}+`;
+            }
+        }
+
+        function isPremiumPlan(planName) {
+            return ['PLATINUM', 'MERGER', 'RealEstate'].includes(planName);
+        }
+
+        function createPlanCard(planName, planData) {
+            const returnPercentage = (planData.returnRate * 100).toFixed(1);
+            const duration = formatDuration(planData.durationInMs);
+            const priceRange = formatPrice(planData.price);
+            
+            return `
+                <div class="plan-card">
+                    ${isPremiumPlan(planName) ? '<div class="premium-badge">Premium</div>' : ''}
+                    <div class="plan-name">${planName.replace(/([A-Z])/g, ' $1').trim()}</div>
+                    <div class="plan-details">
+                        <div class="benefits-section">
+                            <div class="benefits-title">✨ Benefits:</div>
+                            <div class="benefits-list">${planData.benefits}</div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Accrual:</span>
+                            <span class="detail-value return-rate">${planData.accrual}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Minimum Deposit:</span>
+                            <span class="detail-value">$${planData.price.min.toLocaleString()}</span>
+                        </div>
+                        ${planData.price.max ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Maximum Deposit:</span>
+                            <span class="detail-value">$${planData.price.max.toLocaleString()}</span>
+                        </div>
+                        ` : ''}
+                        <div class="detail-item">
+                            <span class="detail-label">ROI:</span>
+                            <span class="detail-value return-rate">${returnPercentage}%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Referral Bonus:</span>
+                            <span class="detail-value referral-bonus">${planData.referralBonus}</span>
+                        </div>
+                        <button class="buy-button" onclick="openPaymentModal('${planName}')">
+                            🚀 Buy Now
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadPlans() {
+            const plansGrid = document.getElementById('plans-grid');
+            
+            try {
+                // Uncomment and modify this section when you have the actual API
+                // const response = await fetch('/getplans');
+                // if (!response.ok) {
+                //     throw new Error('Failed to fetch plans');
+                // }
+                // const plansData = await response.json();
+                
+                // Using detailed mock data for preview
+                const plansData = detailedPlansData;
+                
+                let cardsHTML = '';
+                for (const [planName, planData] of Object.entries(plansData)) {
+                    cardsHTML += createPlanCard(planName, planData);
+                }
+                
+                plansGrid.innerHTML = cardsHTML;
+                
+            } catch (error) {
+                console.error('Error loading plans:', error);
+                plansGrid.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Failed to load plans</h3>
+                        <p>Error: ${error.message}</p>
+                        <button onclick="loadPlans()" style="margin-top: 10px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
+
+        function toggleDropdown(element) {
+            element.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking nav links (except dropdown toggles)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('nav-link') && !e.target.closest('.has-dropdown')) {
+                closeSidebar();
+            }
+            if (e.target.classList.contains('dropdown-item')) {
+                closeSidebar();
+            }
+        });
+        const modal = document.getElementById('paymentModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        let selectedPlan = '';
+
+        function openPaymentModal(planName) {
+            selectedPlan = planName;
+            document.getElementById('modalTitle').textContent = `Payment for ${planName.replace(/([A-Z])/g, ' $1').trim()}`;
+            document.getElementById('selectedPlan').value = planName;
+            
+            const planData = detailedPlansData[planName];
+            const amountInput = document.getElementById('amount');
+            amountInput.min = planData.price.min;
+            if (planData.price.max) {
+                amountInput.max = planData.price.max;
+            }
+            amountInput.placeholder = `Min: $${planData.price.min.toLocaleString()}${planData.price.max ? ` - Max: $${planData.price.max.toLocaleString()}` : '+'}`;
+            
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+ 
+
+        // When setting up the form, set the plan name
+        function setupPaymentForm(planName) {
+            document.getElementById('planName').value = planName;
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+          e.preventDefault();
+              
+          const amount = parseInt(document.getElementById('amount').value);
+          // const transactionId = document.getElementById('transactionId').value;
+           const plan = document.getElementById('selectedPlan').value;
+              
+          try {
+            const res = await fetch('/api/deposit/plans/purchase', {
+              method: 'POST',
+              body: JSON.stringify({ plan, amount}),
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            });
+
+            if (res.ok) {
+              const newDeposit = await res.json();
+              console.log('Deposit made:', newDeposit);
+              showNotification(newDeposit.message, true)
+              //setTimeout(() => window.location.href = '/dashboard', 1000)
+              //window.location.href = '/success';
+            } else {
+                const errorData = await res.json();
+                console.error('Error making deposit:', errorData);
+                showNotification(errorData.message, true);
+              }
+            } catch (error) {
+              console.error('Error making deposit:', error);
+              showNotification('An unexpected error occurred. Please try again later.', true);
+            }
+              
+            // Reset form and close modal
+            this.reset();
+            modal.style.display = 'none';
+        });
+
+        // Load plans when page loads
+        document.addEventListener('DOMContentLoaded', loadPlans);
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span>${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            // Add styles if not already added
+            if (!document.querySelector('#notification-styles')) {
+                const styles = document.createElement('style');
+                styles.id = 'notification-styles';
+                styles.textContent = `
+                    .notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 1rem 1.5rem;
+                        border-radius: 8px;
+                        color: white;
+                        font-weight: 500;
+                        z-index: 10000;
+                        animation: slideIn 0.3s ease-out;
+                        max-width: 400px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        background-color: #51cf66;
+                    }
+                    .notification-success { background-color: #51cf66; }
+                    .notification-error { background-color: #ff6b6b; }
+                    .notification-info { background-color: #667eea; }
+                    .notification-warning { background-color: #ffd43b; color: #333; }
+                    .notification-content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .notification-close {
+                        background: none;
+                        border: none;
+                        color: inherit;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        margin-left: 1rem;
+                        opacity: 0.8;
+                    }
+                    .notification-close:hover { opacity: 1; }
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(styles);
+            }
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 10000);
+        }
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en'},
+                'google_translate_element'
+            );
+        } 
+    </script>
+</body>
+</html>

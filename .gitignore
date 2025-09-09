@@ -3,7 +3,7 @@
 node_modules
 views/notes.txt
 fidelity.session.sql
-prisma/migrations
+./prisma/migrations
 notes.txt
 src/test
 src/__mocks__

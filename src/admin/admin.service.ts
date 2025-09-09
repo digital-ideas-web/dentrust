@@ -1,11 +1,10 @@
 import { prisma } from "../utils/db.sever";
 import { NextFunction, Request, Response } from "express"
-import { User } from "@prisma/client";
-import { Deposit } from "@prisma/client";
 import { generateHash, compareHash } from "../utils/password";
 import Authentication from "../utils/auth";
-import { Roles } from "@prisma/client";
 import { sendDepositConfirmationEmail, sendWithdrawalConfirmationEmail } from "../template/emailTemplate";
+import { User } from "../users/users.service";
+import { checkAdminPermissions, validateUserId } from "../utils/input_validation";
 
 
 // USER
@@ -70,11 +69,6 @@ export const getUsers = async (req: Request, res: Response) => {
             where: {
                 role: "USER"
             },
-            // select: {
-            //     fullName: true,
-            //     userName: true,
-            //     email: true
-            // }
         })
         res.status(200).json({
             data: user
@@ -111,34 +105,34 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 
 //DEPOSIT
-export const deposit = async (req: Request, res: Response) => {
-    const { transactionId, amount, userId, plan }: Deposit = req.body;
-    try {
-        const payment = await prisma.deposit.create({
-            data: {
-                transactionId,
-                amount,
-                userId,
-                plan,
-                isVerified: true
-            }
-        });
-        res.status(201).json(payment)
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            error: "Sever error",
-            message: "Error making payment please wait"
-        })
-    }
-}
+// export const deposit = async (req: Request, res: Response) => {
+//     const { transactionId, amount, userId, plan }: Deposit = req.body;
+//     try {
+//         const payment = await prisma.deposit.create({
+//             data: {
+//                 transactionId,
+//                 amount,
+//                 userId,
+//                 plan,
+//                 isVerified: true
+//             }
+//         });
+//         res.status(201).json(payment)
+//     } catch (error) {
+//         console.log(error)
+//         res.status(500).json({
+//             error: "Sever error",
+//             message: "Error making payment please wait"
+//         })
+//     }
+// }
 
 //get all deposits that are not verified
 export const getAllDeposit = async (req: Request, res: Response) => {
     try {
         const deposit = await prisma.deposit.findMany({
             where: {
-                isVerified: false
+                isVerified: true
             },
             include: { // Use include instead of select for relations
                 user: {
@@ -420,7 +414,7 @@ export const updateWithdraw = async (req: Request, res: Response) => {
         }
 
         //Find a verified withdrawal for the user
-        const verifiedWithdrawal = user.Withdrawal.find(withdrawal => withdrawal.isVerified);
+        const verifiedWithdrawal = user.Withdrawal.find((withdrawal: { isVerified: any; }) => withdrawal.isVerified);
 
         if (!verifiedWithdrawal) {
             throw new Error('No verified withdrawal request by this user');
@@ -449,3 +443,114 @@ export const updateWithdraw = async (req: Request, res: Response) => {
         res.status(500).json({ error: "An error has occured, please wait." })
     }
 }
+
+
+
+//TRANSACTIONS
+
+/**
+ * Get system analytics for admin dashboard
+ * 
+ * @param adminId - ID of the admin requesting analytics
+ */
+export const getSystemAnalytics = async (adminId: number) => {
+    try {
+        validateUserId(adminId);
+
+        const isAdmin = await checkAdminPermissions(adminId);
+        if (!isAdmin) {
+            throw new Error("Insufficient permissions. Admin access required.");
+        }
+
+        const [
+            totalDeposits,
+            confirmedDeposits,
+            pendingDeposits,
+            totalDepositAmount,
+            totalPlanPurchases,
+            totalPlanRevenue
+        ] = await Promise.all([
+            prisma.transactions.count(),
+            prisma.transactions.count({ where: { status: true } }),
+            prisma.transactions.count({ where: { status: false } }),
+            prisma.transactions.aggregate({
+                where: { status: true },
+                _sum: { amount: true }
+            }),
+            prisma.deposit.count(),
+            prisma.deposit.aggregate({
+                _sum: { amount: true }
+            })
+        ]);
+
+        // Plan breakdown analytics
+        const planBreakdown = await prisma.deposit.groupBy({
+            by: ['plan'],
+            _count: true,
+            _sum: {
+                amount: true
+            }
+        });
+
+        return {
+            success: true,
+            analytics: {
+                deposits: {
+                    total: totalDeposits,
+                    confirmed: confirmedDeposits,
+                    pending: pendingDeposits,
+                    totalAmount: totalDepositAmount._sum.amount || 0
+                },
+                plans: {
+                    totalPurchases: totalPlanPurchases,
+                    totalRevenue: totalPlanRevenue._sum.amount || 0,
+                    breakdown: planBreakdown
+                },
+                conversionRate: totalDeposits > 0
+                    ? ((totalPlanPurchases / confirmedDeposits) * 100).toFixed(2) + '%'
+                    : '0%'
+            }
+        };
+
+    } catch (error) {
+        console.error('Error fetching system analytics:', error);
+        throw error;
+    }
+};
+
+
+
+// export async function logAdminAction({
+//     adminId,
+//     action,
+//     transactionId,
+//     userId,
+//     amount
+// }: {
+//     adminId: number;
+//     action: string;
+//     transactionId: string;
+//     userId: number;
+//     amount: number;
+// }): Promise<void> {
+//     try {
+//         // Log to console for now - implement proper audit logging in production
+//         console.log(`[AUDIT] ${action} by User ${adminId} on Transaction ${transactionId} for User ${userId} Amount: $${amount}`);
+
+//         // Example implementation with audit table:
+//         /*
+//         await prisma.auditLog.create({
+//           data: {
+//             adminId,
+//             action,
+//             transactionId,
+//             targetUserId: userId,
+//             amount,
+//             timestamp: new Date()
+//           }
+//         });
+//         */
+//     } catch (error) {
+//         console.error('Error logging admin action:', error);
+//     }
+// }

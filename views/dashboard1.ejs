@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EternalTradings Dashboard</title>
+    <title>Dentrust Capital Investments</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
         /* Sidebar Styles */
         .sidebar {
             width: 280px;
-            background:linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            background:linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255, 255, 255, 0.2);
             padding: 2rem 0;
@@ -75,7 +75,7 @@
         }
 
         .nav-link:hover, .nav-link.active {
-            background:  linear-gradient(135deg, #3b288f 0%, #6b58bf 100%);
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             transform: translateX(5px);
         }
@@ -118,7 +118,7 @@
             top: 1rem;
             left: 1rem;
             z-index: 1001;
-            background:  linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             border: none;
             border-radius: 8px;
             padding: 0.5rem;
@@ -140,7 +140,7 @@
         }
 
         .header {
-            background:  linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 1.5rem 2rem;
@@ -171,7 +171,7 @@
             backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 2rem;
-            border: 50px solid linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            border: 50px solid linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -227,7 +227,7 @@
 
         /* Transaction History */
         .transaction-section {
-            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 2rem;
@@ -248,8 +248,8 @@
         }
 
         .filter-select {
-            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
-            border: 1px solid linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: 1px linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             border-radius: 8px;
             padding: 0.5rem 1rem;
             color: white;
@@ -271,7 +271,7 @@
         .transaction-table td {
             padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            border-bottom: 1px solid  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         }
 
         .transaction-table th {
@@ -287,7 +287,7 @@
         }
 
         .transaction-table tbody tr:hover {
-            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            background:  linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         }
 
         .plan-badge {
@@ -368,7 +368,7 @@
         <!-- Sidebar -->
         <aside class="sidebar mobile-hidden" id="sidebar">
             <div class="company-logo">
-                <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo">
+                <img src="/ASSETS/dentrust.svg" alt="Logo" class="imgLogo">
             </div>
             
             <nav>
@@ -383,19 +383,6 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="toggleDropdown('transactionDropdown')">
-                            <svg class="nav-icon" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                            </svg>
-                            Transactions
-                        </a>
-                        <div class="dropdown" id="transactionDropdown">
-                            <a href="/plans" onclick="showSection('deposits')">Deposits</a>
-                            <a href="/withdraw" onclick="showSection('withdrawals')">Withdrawals</a>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item">
                         <a href="#" class="nav-link" onclick="toggleDropdown('fundDropdown')">
                             <svg class="nav-icon" viewBox="0 0 24 24">
                                 <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
@@ -403,10 +390,25 @@
                             Fund Account
                         </a>
                         <div class="dropdown" id="fundDropdown">
-                            <a href="/installmentPay" onclick="showSection('makePayment')">Make Payment</a>
-                            <a href="/installmentTransaction" onclick="showSection('viewPayments')">View Payments</a>
+                            <a href="/depositPay" onclick="showSection('makePayment')">Deposit</a>
+                            <a href="/withdraw" onclick="showSection('withdrawals')">Withdraw</a>
+                            
                         </div>
                     </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="toggleDropdown('transactionDropdown')">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Transactions
+                        </a>
+                        <div class="dropdown" id="transactionDropdown">
+                            <a href="/plans" onclick="showSection('deposits')">Purchase a plan</a>
+                            <a href="/transaction" onclick="showSection('viewPayments')">History</a>
+                        </div>
+                    </li>
+                    
 
                     <li class="nav-item">
                         <a href="/profile" class="nav-link" onclick="showSection('profile')">
@@ -438,25 +440,18 @@
 
             <!-- Dashboard Cards -->
             <div class="dashboard-cards">
-                <div class="card card-deposit">
-                    <div class="card-header">
-                        <span class="card-title">Total Deposits</span>
-                    </div>
-                    <div class="card-value">$<%= balance %></div>
-                </div>
-
-                <div class="card card-withdrawal">
-                    <div class="card-header">
-                        <span class="card-title">Total Withdrawn</span>
-                    </div>
-                    <div class="card-value">$<%= withdraw %></div>
-                </div>
-
                 <div class="card card-balance ">
                     <div class="card-header">
-                        <span class="card-title">Account Balance</span>
+                        <span class="card-title">Wallet Balance</span>
                     </div>
-                    <div class="card-value">$<%= totalBalance %></div>
+                    <div class="card-value">$<%= totalBalance.availableBalance%></div>
+                </div>
+
+                <div class="card card-deposit">
+                    <div class="card-header">
+                        <span class="card-title">Available Balance</span>
+                    </div>
+                    <div class="card-value">$<%= roi %></div>
                 </div>
 
                 <div class="card card-investment ">
@@ -465,12 +460,19 @@
                     </div>
                     <div class="card-value">$<%= activeInvestment%></div>
                 </div>
+
+                <div class="card card-withdrawal">
+                    <div class="card-header">
+                        <span class="card-title">Total Withdrawn</span>
+                    </div>
+                    <div class="card-value">$<%= withdraw %></div>
+                </div>
             </div>
 
             <!-- Transaction History -->
             <div class="transaction-section">
                 <div class="section-header">
-                    <h3 class="section-title">Recent Deposits</h3>
+                    <h3 class="section-title">Recent Purchase</h3>
                     <select class="filter-select" id="transactionFilter">
                         <option value="all">All Transactions</option>
                         <option value="today">Today</option>

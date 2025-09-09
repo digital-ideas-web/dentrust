@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <link rel="stylesheet" href="../home.css">
+    <link rel="stylesheet" href="../newstyle.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link
     rel="stylesheet"
@@ -18,115 +18,72 @@
 </head>
  
 <body>
-    <nav>
-        <header>
-            <div class="logo">
-                <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo">
-            </div>
-            <div class="navigation">
-                <input type="checkbox" class="toggle-menu">
-                <div class="hamburger"></div>
-                <ul class="menu">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-            
-                    <!-- CHANGE AND PUT LOGIN PAGE IN THE HREF HERE -->
-                    <div class="dropdown">
-                        <li class="dropD"><a href="/plans">Plans</a></li>
-                    
-                    </div>
+    <header class="primary-header" >
+        <!--MENU BUTTON-->
+        <button class="mobile-nav-toggle"
+         aria-controls="primary-navigation" aria-expanded="false">
+         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        </button>
 
-                    <!-- CHANGE AND PUT LOGIN PAGE IN THE HREF HERE -->
-                    <div class="dropdown">
-                        <li class="dropD"><a href="/contact">Contact</a></li>
-                    
-                    </div>
-
-                    <!-- CHANGE AND PUT LOGIN PAGE IN THE HREF HERE -->
-                   <button class="login">
-                    <!-- <li> -->
-                      <a href="/login">LOGIN
-
-                      </a>
-                    <!-- </li> -->
-                  </button> 
-
-                </ul>
-
-            </div>
-        </header>
-    </nav>
-    <br> <br> <br>
-
-    <div class="container-fluid">
-        <div class="left" style="padding: 40px 40px;">
-            <!-- <h1 style="color: gold;"> It’s time to meet your financial goals</h1> <br> -->
-            <h1 style="color: #fff"> ABOUT US </h1>
-            <h6 style="color: gold"><a style="text-decoration:none;width: 100%; color: #fff;font-size: medium;" href="../home.html">Home</a> - About us</h6>
-            <br>
-             <br> <br>
-            
-        </div>
-        <div class="slide-left">
-        <div class="right">
-            <img src="../ASSETS/Asset 26.1.png" alt="">
-        </div>
-        </div>
-        
-    </div>
-
-
-    <div style="background-color: #fff;" class="container-fluid">
-        <div class="slide-left1">
-        <div class="left1">
-            <img src="../ASSETS/womens-with-phones-office22.jpg" alt="">
-        </div>
-        </div>
-
-        <div class="right1">
-            <h4 style="color: gold;"> Who We Are_______</h4>
-            <h1 style="color: #3b288f;"> Know About Us</h1> <br>
-            <h4 style="color: black;"> Achieving the level of financial security that supports your lifestyle and goals is vital to living life to the fullest. Whether you’re investing to build your legacy, growing a nest egg to enjoy retirement, or saving for your kid’s college tuition, Eternal Trading can help you achieve them with guarantee.
-
-                Taking a proactive approach to your finances today can create opportunities and rewards for you and your family tomorrow.</h4>
-            <br>
-            <!-- <button href="#" type="button"   class="login11">
-                    <a style="color: #fff;">Read more</a>
-            </button> -->
-            <br> <br>
-                </svg>
-
+        <!--navbar-->
+            <nav>
+                <div class="company-logo">
+                  <a href="/">  <img src="/ASSETS/dentrust.svg" alt="Logo" class="imgLogo"> </a>
+                </div>
                 
-            </div>
-        </div>
-        
-    </div>
+                <ul id="primary-navigation" data-visible='false' class="primary-navigation flex">
+                    <li class="active">
+                        <a href="/"> <span 
+                            aria-hidden="true"></span>Home</a>
+                    </li>
+                    <li>
+                        <a href="/about">
+                            <span 
+                            aria-hidden="true"></span>About</a>
+                    </li>
+                    <li>
+                        <a href="/login">
+                            <span 
+                            aria-hidden="true"></span>Login</a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span 
+                            aria-hidden="true"></span>Contact</a>
+                    </li>
+                </ul>
+            </nav>
+
+    </header>
+
 
     <div class="missioncon">
         <div class="container" >
             <p>
-                <strong>This is Eternal Trading</strong>, your gateway to the world of intelligent and lucrative investments. Established with the vision of empowering individuals to secure their financial future, Eternal Trading is your trusted partner in the realm of property, cryptocurrency, immigration, and other forms of investment. Our commitment to excellence, transparency, and innovation sets us apart as a premier platform for those seeking to grow their wealth through various approved means.
+                <strong>This is Dentrust Capital Investment</strong>, your gateway to the world of intelligent and lucrative investments. Established with the vision of empowering individuals to secure their financial future, Dentrust Capital is your trusted partner in the realm of property, cryptocurrency, immigration, and other forms of investment. Our commitment to excellence, transparency, and innovation sets us apart as a premier platform for those seeking to grow their wealth through various approved means.
             </p>
     
             <p>
                 <b>Our Mission:</b>
-                At Eternal Trading, our mission is clear: to provide a pathway to financial prosperity through strategic investments. We are dedicated to helping our clients achieve their financial goals and aspirations by offering carefully curated investment packages and expert guidance. Our unwavering commitment to integrity and customer satisfaction drives every decision we make.
+                At Dentrust, our mission is clear: to provide a pathway to financial prosperity through strategic investments. We are dedicated to helping our clients achieve their financial goals and aspirations by offering carefully curated investment packages and expert guidance. Our unwavering commitment to integrity and customer satisfaction drives every decision we make.
             </p>
     
             <p>
                 <b>Our Vision:</b>
-                At Eternal Trading, we envision a future where financial empowerment is within reach for everyone. We believe that by providing access to intelligent investments and fostering a culture of financial literacy, we can help individuals from all walks of life secure their financial future.
+                At Dentrust, we envision a future where financial empowerment is within reach for everyone. We believe that by providing access to intelligent investments and fostering a culture of financial literacy, we can help individuals from all walks of life secure their financial future.
     
                 Our vision is to be the global leader in many forms of investments, known for our unwavering commitment to transparency, expertise, and innovation. We aim to create a world where financial success is not limited to the few but accessible to the many.
             </p>
     
             <p><b>Your Financial Future, Our Priority</b></p>
     
-            <p>At Eternal Trading, your financial well-being is our top priority. We are here to guide you on your investment journey, whether you're just starting or looking to expand your portfolio. We take pride in our commitment to building lasting relationships with our clients, and we measure our success by the success of our investors.</p>  
+            <p>At Dentrust, your financial well-being is our top priority. We are here to guide you on your investment journey, whether you're just starting or looking to expand your portfolio. We take pride in our commitment to building lasting relationships with our clients, and we measure our success by the success of our investors.</p>  
     
-            <p>  Join us at Eternal Trading and embark on a journey towards financial freedom. Let's turn your dreams into reality, one smart investment at a time. </p>  
+            <p>  Join us at Dentrust Capital Investment and embark on a journey towards financial freedom. Let's turn your dreams into reality, one smart investment at a time. </p>  
                 
-            <p>   Invest with confidence. Invest with Eternal Trading.</p>
+            <p>   Invest with confidence. Invest with Dentrust Capital Investment.</p>
     
         </div>
        </div>
@@ -140,12 +97,12 @@
           
           border-bottom-left-radius: 30px;
           border-bottom-right-radius: 30px;">
-            <h5 style="color: gold;"> Features_______</h5> 
-                <h1 style="color: #3b288f;"> WHY CHOOSE US</h1>
-                <h6 style="color: #3b288f;"> We post some of the best gains in the markets we partake in on a consistent basis. </h6>
+            <h5 style="color: #d17a3a;"> Features_______</h5> 
+                <h1 style="color: rgba(0, 60, 255, 0.219);"> WHY CHOOSE US</h1>
+                <h6 style="color: rgba(0, 60, 255, 0.219);"> We post some of the best gains in the markets we partake in on a consistent basis. </h6>
             </div> <br> <br>
         <div class="row" >
-                    <div class="col" style=" color: #3b288f;">
+                    <div class="col" style=" color: rgba(0, 60, 255, 0.219);">
                       <div class="itemitem"> <center>
                     <!-- <img width="330px" src="/ASSETS/forbes-logo-40224.png" alt=""> --> <div class="item" style="width: 330px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
@@ -157,7 +114,7 @@
                       <h6>INVESTING WITHOUT BORDERS. You can invest in our company from anywhere in the world and earn profit</h6>
                     </div>
                     </div>
-                    <div class="col" style=" color: #3b288f;""> 
+                    <div class="col" style=" color: rgba(0, 60, 255, 0.219);"> 
                       <div class="itemitem"> <center>
                      <!-- <img width="330px" src="/ASSETS/bloomberg-logo-transparent.png" alt="">0 --> <div style="width: 330px;">
                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
@@ -169,7 +126,7 @@
                     </div>
                     </div>
                     
-                    <div class="col" style=" color: #3b288f;"">
+                    <div class="col" style=" color: rgba(0, 60, 255, 0.219);"">
                       <div class="itemitem"> <center>
                       <!-- <img width="330px" src="/ASSETS/Vice_News_primary_logo.svg.png" alt=""> --> <div style="width: 330px;">
                       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
@@ -186,7 +143,102 @@
   </div><br> <br> 
    <!-- Choose -->
 
-   <%- include('partial/homefooter'); -%>
+<!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <!-- Brand Section -->
+                <div class="footer-brand">
+                    <div class="logo">
+                <img src="/ASSETS/dentrust.svg" alt="Logo" class="imgLogo">
+                    </div>
+                    <p class="footer-description">
+                        Your trusted partner in financial growth and investment opportunities. We provide secure, reliable, and profitable investment solutions for individuals and businesses worldwide.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-column">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-angle-right"></i>About Us</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i>Investment Plans</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i>Our Services</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i>Testimonials</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i>Contact</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i>FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div class="footer-column">
+                    <h3 class="footer-title">Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chart-line"></i>Crypto Trading</a></li>
+                        <li><a href="#"><i class="fas fa-coins"></i>Forex Trading</a></li>
+                        <li><a href="#"><i class="fas fa-building"></i>Real Estate</a></li>
+                        <li><a href="#"><i class="fas fa-shield-alt"></i>Insurance</a></li>
+                        <li><a href="#"><i class="fas fa-plane"></i>Immigration</a></li>
+                        <li><a href="#"><i class="fas fa-piggy-bank"></i>Mutual Funds</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="footer-column">
+                    <h3 class="footer-title">Contact Info</h3>
+                    <div class="contact-info">
+                       <!-- <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Address</h4>
+                                <p>123 Financial District<br>New York, NY 10005</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Phone</h4>
+                                <p>+1 (555) 123-4567<br>+1 (555) 987-6543</p>
+                            </div>
+                        </div>-->
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p>info@dentrust.com<br>support@dentrust.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2025 Dentrust. All rights reserved. | Built for your financial success</p>
+                </div>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
   
   <!-- footer -->
   
@@ -201,10 +253,6 @@
     @media screen and (max-width: 992px) {
         .left1{
             display: none;
-        }
-
-        body{
-            /* display: flex; */
         }
 
         .container-fluid{
@@ -271,6 +319,120 @@
 </style>
    
 
-    <script src="script.js"></script>
+    <script>
+         function scrollCards(direction) {
+            const slider = document.getElementById('cardSlider');
+            const scrollAmount = 340; // Width of card + gap
+            
+            if (direction === 'left') {
+                slider.scrollLeft -= scrollAmount;
+            } else {
+                slider.scrollLeft += scrollAmount;
+            }
+        }
+
+        // Touch/swipe support for mobile
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        const slider = document.getElementById('cardSlider');
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2;
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                scrollCards('left');
+            } else if (e.key === 'ArrowRight') {
+                scrollCards('right');
+            }
+        });
+
+       // Smooth scroll for footer links
+        document.querySelectorAll('.footer-links a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Add smooth scroll behavior here if needed
+            });
+        });
+
+        // Social links hover effect
+        document.querySelectorAll('.social-links a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.1)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // menubar
+        const primaryNav = document.querySelector(".primary-navigation");
+        const navToggle =  document.querySelector(".mobile-nav-toggle");
+
+        navToggle.addEventListener("click", () => {
+            const visibility = primaryNav.getAttribute("data-visible");
+
+            if(visibility === "false") {
+                primaryNav.setAttribute("data-visible", true);
+            } else if (visibility === "true"){
+                primaryNav.setAttribute("data-visible", false);  
+            }
+        }) 
+
+        const prevButton = document.querySelector('.prev-slide');
+        const nextButton = document.querySelector('.next-slide');
+        const slider_menubar = document.querySelector('.card-slider');
+
+        let scrollPos = 0;
+        const cardWidth = slider.querySelector('.card').offsetWidth;
+        const numCards = slider.querySelectorAll('.card').length;
+
+        prevButton.addEventListener('click', () => {
+        if (scrollPos > 0) {
+            scrollPos -= cardWidth + 30;
+            slider_menubar.scrollTo({
+            left: scrollPos,
+            behavior: 'smooth'
+            });
+        }
+        });
+
+        nextButton.addEventListener('click', () => {
+        if (scrollPos < (numCards - 1) * (cardWidth + 30)) {
+            scrollPos += cardWidth + 30;
+            slider_menubar.scrollTo({
+            left: scrollPos,
+            behavior: 'smooth'
+            });
+        }
+        });
+
+
+
+
+    </script>
 </body>
 </html>

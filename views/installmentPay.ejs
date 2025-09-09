@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EternalTrading</title>
+    <title>DenTrust Capital Investments</title>
     <style>
         * {
             margin: 0;
@@ -232,6 +232,29 @@
             margin: 0 auto 10px;
         }
 
+         .wallet-address-group {
+            position: relative;
+        }
+
+        .copy-button {
+            /*position: absolute;*/
+            right: 10px;
+            top: 50%;
+            /*transform: translateY(-50%);*/
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: #764ba2;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -263,53 +286,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1> Investment Plans</h1>
+            <h1> Fund Your Account</h1>
             <p>Choose your plan and make installment payments towards your financial goals</p>
         </div>
 
         <div class="form-container">
             <form id="installmentForm">
 
-
-                <div class="form-group">
-                    <label for="plan">Select Investment Plan</label>
-                    <select id="plan" name="plan" required>
-                        <option value="">-- Choose a Plan --</option>
-                        <option value="PRIME">Prime Plan</option>
-                        <option value="STANDARD">Standard Plan</option>
-                        <option value="GOLD">Gold Plan</option>
-                        <option value="PLATINUM">Platinum Plan</option>
-                        <option value="INSURANCE">Insurance Plan</option>
-                        <option value="RealEstate">Real Estate Plan</option>
-                        <option value="MERGER">Merger Plan</option>
-                        <option value="IMMIGRATION">Immigration Plan</option>
-                        <option value="ETF">ETF Plan</option>
-                    </select>
-                    
-                    <div id="planInfo" class="plan-info">
-                        <h3 id="planName">Plan Details</h3>
-                        <div class="plan-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Minimum</div>
-                                <div class="detail-value" id="planMin">$0</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Maximum</div>
-                                <div class="detail-value" id="planMax">$0</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Duration</div>
-                                <div class="detail-value" id="planDuration">0 months</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Return Rate</div>
-                                <div class="detail-value" id="planReturn">0%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
+               <!-- <div class="form-group">
                     <div class="checkbox-group">
                         <input type="checkbox" id="customTarget" name="customTarget">
                         <label for="customTarget">Set custom target amount (optional)</label>
@@ -320,7 +304,7 @@
                         <input type="number" id="targetAmount" name="targetAmount" placeholder="Enter your desired target amount">
                         <div class="range-display" id="rangeDisplay">Must be between plan minimum and maximum</div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="form-group">
                     <label for="amount">Payment Amount</label>
@@ -330,6 +314,12 @@
                 <div class="form-group">
                     <label for="transactionId">Transaction ID</label>
                     <input type="text" id="transactionId" name="transactionId" required placeholder="Enter transaction ID">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Wallet Address</label>
+                    <input type="text" id="walletAddress" class="form-input" value="bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl" readonly>
+                    <button type="button" class="copy-button" onclick="copyWalletAddress()">Copy</button>
                 </div>
 
                 <button type="submit" class="submit-btn">
@@ -352,104 +342,103 @@
 
     <script>
         // DOM elements
-        const planSelect = document.getElementById('plan');
-        const planInfo = document.getElementById('planInfo');
-        const customTargetCheckbox = document.getElementById('customTarget');
-        const targetAmountSection = document.getElementById('targetAmountSection');
-        const targetAmountInput = document.getElementById('targetAmount');
+        // const planSelect = document.getElementById('plan');
+        // const planInfo = document.getElementById('planInfo');
+        // const customTargetCheckbox = document.getElementById('customTarget');
+        // const targetAmountSection = document.getElementById('targetAmountSection');
+        // const targetAmountInput = document.getElementById('targetAmount');
         const form = document.getElementById('installmentForm');
         const loading = document.getElementById('loading');
         const result = document.getElementById('result');
 
 
         
-        let planData = {};
+        // let planData = {};
 
         // Fetch the plan constants from the backend when the page loads
-        async function fetchPlanData() {
-            try {
-                const res = await fetch('/api/planConstants');
-                if (!res.ok) throw new Error("Failed to load plan data");
-                planData = await res.json();
-            } catch (err) {
-                alert("Error fetching plan data: " + err.message);
-            }
-        }
+        // async function fetchPlanData() {
+        //     try {
+        //         const res = await fetch('/api/planConstants');
+        //         if (!res.ok) throw new Error("Failed to load plan data");
+        //         planData = await res.json();
+        //     } catch (err) {
+        //         alert("Error fetching plan data: " + err.message);
+        //     }
+        // }
 
         // Call on load
-        window.addEventListener('DOMContentLoaded', fetchPlanData);
+        // window.addEventListener('DOMContentLoaded', fetchPlanData);
 
-        planSelect.addEventListener('change', () => {
-            const selected = planSelect.value;
-            const config = planData[selected];
+        // planSelect.addEventListener('change', () => {
+        //     const selected = planSelect.value;
+        //     const config = planData[selected];
 
-            if (config) {
-                document.getElementById('planName').innerText = `${selected} Plan`;
-                document.getElementById('planMin').innerText = `$${config.price.min.toLocaleString()}`;
-                document.getElementById('planMax').innerText = config.price.max ? `$${config.price.max.toLocaleString()}` : 'No limit';
-                document.getElementById('planDuration').innerText = `${Math.round(config.durationInMs / (1000 * 60 * 60 * 24))} days`;
-                document.getElementById('planReturn').innerText = `${(config.returnRate * 100).toFixed(0)} %`;
-                planInfo.style.display = 'block';
+        //     if (config) {
+        //         document.getElementById('planName').innerText = `${selected} Plan`;
+        //         document.getElementById('planMin').innerText = `$${config.price.min.toLocaleString()}`;
+        //         document.getElementById('planMax').innerText = config.price.max ? `$${config.price.max.toLocaleString()}` : 'No limit';
+        //         document.getElementById('planDuration').innerText = `${Math.round(config.durationInMs / (1000 * 60 * 60 * 24))} days`;
+        //         document.getElementById('planReturn').innerText = `${(config.returnRate * 100).toFixed(0)} %`;
+        //         planInfo.style.display = 'block';
 
-                // Update target amount validation
-                updateTargetAmountValidation(config);
-            } else {
-                planInfo.classList.remove('active');
-                targetAmountSection.classList.remove('active');
-                customTargetCheckbox.checked = false;
-            }
-        });
+        //         // Update target amount validation
+        //         updateTargetAmountValidation(config);
+        //     } else {
+        //         planInfo.classList.remove('active');
+        //         targetAmountSection.classList.remove('active');
+        //         customTargetCheckbox.checked = false;
+        //     }
+        // });
 
-        // Custom target checkbox handler
-        customTargetCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                targetAmountSection.classList.add('active');
-                targetAmountInput.required = true;
-            } else {
-                targetAmountSection.classList.remove('active');
-                targetAmountInput.required = false;
-                targetAmountInput.value = '';
-            }
-        });
+        // // Custom target checkbox handler
+        // customTargetCheckbox.addEventListener('change', function() {
+        //     if (this.checked) {
+        //         targetAmountSection.classList.add('active');
+        //         targetAmountInput.required = true;
+        //     } else {
+        //         targetAmountSection.classList.remove('active');
+        //         targetAmountInput.required = false;
+        //         targetAmountInput.value = '';
+        //     }
+        // });
 
         // Update target amount validation
-        function updateTargetAmountValidation(config) {
-            const rangeDisplay = document.getElementById('rangeDisplay');
-            const min = config.price.min;
-            const max = config.price.max;
+        // function updateTargetAmountValidation(config) {
+        //     const rangeDisplay = document.getElementById('rangeDisplay');
+        //     const min = config.price.min;
+        //     const max = config.price.max;
             
-            targetAmountInput.min = min;
-            if (max) {
-                targetAmountInput.max = max;
-                rangeDisplay.textContent = `Must be between $${min.toLocaleString()} and $${max.toLocaleString()}`;
-            } else {
-                targetAmountInput.removeAttribute('max');
-                rangeDisplay.textContent = `Must be at least $${min.toLocaleString()}`;
-            }
-        }
+        //     targetAmountInput.min = min;
+        //     if (max) {
+        //         targetAmountInput.max = max;
+        //         rangeDisplay.textContent = `Must be between $${min.toLocaleString()} and $${max.toLocaleString()}`;
+        //     } else {
+        //         targetAmountInput.removeAttribute('max');
+        //         rangeDisplay.textContent = `Must be at least $${min.toLocaleString()}`;
+        //     }
+        // }
 
         // Form submission logic
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             // Gather form data
-            const plan = planSelect.value;
+            // const plan = planSelect.value;
             const amount = parseFloat(document.getElementById('amount').value);
             const transactionId = document.getElementById('transactionId').value;
-            const useCustomTarget = customTargetCheckbox.checked;
-            const targetAmount = useCustomTarget ? parseFloat(targetAmountInput.value) : null;
+            // const useCustomTarget = customTargetCheckbox.checked;
+            // const targetAmount = useCustomTarget ? parseFloat(targetAmountInput.value) : null;
 
             // Basic validation
-            if (!plan || !amount || !transactionId) {
+            if ( !amount || !transactionId) {
                 alert("Please fill in all required fields.");
                 return;
             }
 
             const payload = {
-                plan,
                 amount,
                 transactionId,
-                ...(useCustomTarget && { targetAmount })
+                // ...(useCustomTarget && { targetAmount })
             };
 
             // Show loading spinner
@@ -457,7 +446,7 @@
             result.style.display = 'none';
 
             try {
-                const response = await fetch('/api/installment', {
+                const response = await fetch('/api/wallet/deposit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -471,13 +460,12 @@
                     document.getElementById('resultTitle').innerText = '✅ Payment Successful';
                     document.getElementById('resultMessage').innerText = data.message || 'Your payment was processed successfully.';
                     document.getElementById('resultDetails').innerHTML = `
-                        <p><strong>Plan:</strong> ${plan}</p>
                         <p><strong>Amount:</strong> $${amount}</p>
                         <p><strong>Transaction ID:</strong> ${transactionId}</p>
                     `;
                     form.reset();
-                    planInfo.style.display = 'none';
-                    targetAmountSection.style.display = 'none';
+                    // planInfo.style.display = 'none';
+                    // targetAmountSection.style.display = 'none';
                 } else {
                     throw new Error(data.message || 'Something went wrong');
                 }
@@ -524,6 +512,24 @@
             
             // Scroll to result
             resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // function to copy wallet address
+        function copyWalletAddress() {
+            const walletInput = document.getElementById('walletAddress');
+            walletInput.select();
+            walletInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(walletInput.value);
+            
+            const copyBtn = event.target;
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            copyBtn.style.background = '#27ae60';
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = '#667eea';
+            }, 2000);
         }
 
     </script>

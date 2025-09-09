@@ -1,6 +1,5 @@
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import jwt, { Secret, JwtPayload, SignOptions } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '@prisma/client';
 import { getUser } from '../users/users.service';
 
 
@@ -21,7 +20,8 @@ class Authentication {
     public static generateToken(id: number, role: any): string {
         const secretKey: string = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
         const payload: Payload = { userId: id, role: role };
-        const option = { expiresIn: process.env.JWT_EXPIRES_IN || '24h' };
+        const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
+        const option: SignOptions = { expiresIn: expiresIn as any };
 
         return jwt.sign(payload, secretKey, option)
     }

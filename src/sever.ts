@@ -13,6 +13,7 @@ import axios from "axios";
 
 import * as PaymentService from "./payment/payment.service"
 import * as UserService from "./users/users.service"
+import * as TransactionService from "./transactions/transaction.service"
 import { getAllDeposit, getAllDeposits, getUnverifiedDeposits, getUsers } from "./admin/admin.service";
 import { listUnverifiedWithdrawal } from "./withdraw/withdraw.service";
 
@@ -24,7 +25,7 @@ import { cookie } from "express-validator";
 import { adminRouter } from "./admin/admin.router";
 import { prisma } from "./utils/db.sever";
 import { mailRoute } from "./handler/mailRoute";
-import { installmentRouter } from "./installmentPayment/installment.router";
+import { transactions } from "./transactions/transactions.router";
 
 import { planConfigs } from "./utils/payment.constants"
 
@@ -63,7 +64,7 @@ app.use("/api/user", userRouter);
 app.use("/api/deposit", paymentRouter);
 app.use("/api/withdrawal", withdrawRouter);
 
-app.use('/api', installmentRouter);
+app.use('/api', transactions);
 app.use('/api', planConfigs);
 app.use("/api/admin", adminRouter)
 app.use('/api', mailRoute);
@@ -100,7 +101,7 @@ app.get('/adminDashboard', verifyToken, async (req, res) => {
 });
 app.get('/admin', (req, res) => res.render('adminLogin'));
 app.get('/newadmin', (req, res) => res.render("adminsignup"));
-app.get('/plans', (req, res) => res.render('plans'));
+app.get('/plans', verifyToken, authorization('USER'), async (req, res) => res.render('plans'));
 
 app.get('/test', async (req, res) => {
     res.render('test')
@@ -122,15 +123,15 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
         const deposits = await PaymentService.listDeposit(id);
         const balance = await PaymentService.getAvailableBalance(id);
         const users = await UserService.getUser(id);
-        const totalBalance = await PaymentService.getFinalBalance(id)
+        const totalBalance = await TransactionService.getUserWalletBalance(id)
         const withdraw = await PaymentService.totalWithdraws(id)
         const activeInvestment = await PaymentService.activeInvestment(id)
 
 
-        console.log('deposit:', deposits)
-        console.log('roi:', roi)
-        console.log('balance:', balance)
-        console.log('user:', users)
+        // console.log('deposit:', deposits)
+        // console.log('roi:', roi)
+        // console.log('balance:', balance)
+        // console.log('user:', users)
         // Render the EJS template and pass the data
         res.render('dashboard1', { deposits, roi, balance, users, totalBalance, withdraw, activeInvestment });
     } catch (error: any) {
@@ -187,9 +188,9 @@ app.get('/withdraw', verifyToken, async (req, res) => {
     }
 });
 
-app.get('/installmentPay', verifyToken, (req, res) => res.render('installmentPay'));
-app.get('/verifyInstallment', (req, res) => res.render('verifyInstallment'));
-app.get('/installmentTransaction', verifyToken, (req, res) => res.render('installmentTransaction'));
+app.get('/depositPay', verifyToken, (req, res) => res.render('installmentPay'));
+app.get('/verifyDeposit', (req, res) => res.render('verifyInstallment'));
+app.get('/transaction', verifyToken, (req, res) => res.render('installmentTransaction'));
 
 httpServer.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
